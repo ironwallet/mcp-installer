@@ -76,7 +76,7 @@ while read -r hash name; do
   if [[ "$attach" != "$name" ]]; then
     mv "$name" "$attach"
   fi
-  assets+=("$attach")
+  assets+=("$work/$attach")
   latest_redirects+=("download/latest/${os}/$(latest_name "$name")|${cdn_prefix}/${os}/${name}")
   size="$(wc -c <"$attach" | tr -d ' ')"
   arch=amd64
@@ -97,11 +97,11 @@ if [[ ${#assets[@]} -eq 0 ]]; then
   echo "checksums.txt listed no files" >&2
   exit 1
 fi
-assets+=(checksums.txt)
+assets+=("$work/checksums.txt")
 latest_redirects+=("download/latest/checksums.txt|${cdn_prefix}/checksums.txt")
 
 if curl -fsSL "${cdn_prefix}/checksums.txt.sig" -o checksums.txt.sig; then
-  assets+=(checksums.txt.sig)
+  assets+=("$work/checksums.txt.sig")
   latest_redirects+=("download/latest/checksums.txt.sig|${cdn_prefix}/checksums.txt.sig")
 fi
 latest_redirects+=("download/latest/|${cdn_prefix}/")
@@ -122,12 +122,22 @@ notes="$(mktemp)"
   done
 } >"$notes"
 
-if gh release view "$tag" >/dev/null 2>&1; then
+# Downloads live in $work, which is not a git checkout. gh must not infer the
+# repo from .git; GITHUB_REPOSITORY is set on Actions.
+export GH_REPO="${GITHUB_REPOSITORY:-ironwallet/mcp-installer}"
+gh_target=()
+if [[ -n "${GITHUB_SHA:-}" ]]; then
+  gh_target=(--target "$GITHUB_SHA")
+fi
+
+if gh release view "$tag" --repo "$GH_REPO" >/dev/null 2>&1; then
   echo "GitHub Release ${tag} already exists; not mutating assets"
 else
   gh release create "$tag" \
+    --repo "$GH_REPO" \
     --title "$tag" \
     --notes-file "$notes" \
+    "${gh_target[@]}" \
     "${assets[@]}"
   echo "created GitHub Release ${tag}"
 fi
