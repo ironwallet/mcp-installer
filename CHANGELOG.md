@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-09-01
+
+Codex is now labeled ChatGPT in the installer.
+
 ## [1.1.1] - 2026-09-01
 
 The done screen now offers Open for Codex when the ChatGPT desktop app is installed: it opens a new chat with the first-run prompt prefilled.
@@ -31,7 +35,8 @@ Install the Claude Code CLI into `~/.local` when the npm global prefix is not wr
 
 Initial release.
 
-[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/ironwallet/mcp-installer/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/ironwallet/mcp-installer/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/ironwallet/mcp-installer/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/ironwallet/mcp-installer/compare/v1.0.1...v1.0.2
