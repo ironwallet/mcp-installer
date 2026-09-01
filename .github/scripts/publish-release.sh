@@ -146,6 +146,7 @@ export AWS_ACCESS_KEY_ID="$MINIO_ACCESS_KEY"
 export AWS_SECRET_ACCESS_KEY="$MINIO_SECRET_KEY"
 export AWS_DEFAULT_REGION="${MINIO_REGION:-us-east-1}"
 export AWS_EC2_METADATA_DISABLED=true
+export AWS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 put_latest() {
   echo "PUT ${MINIO_BUCKET}/$1"
