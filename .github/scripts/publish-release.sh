@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# GitHub Actions: GitHub Release from CDN v* objects, then PUT latest.json,
-# LATEST, and 302 objects under download/latest/** → download/vX.Y.Z/**.
+# GitHub Actions: GitHub Release from CDN v* objects, then PUT latest.json.
+# latest/** 302 is nginx (latest.json.tag → vX.Y.Z/**). Do not write latest/** or LATEST.
 # Fail closed if VERSION is bad, CDN prefix is missing, or MinIO secrets are unset.
 set -euo pipefail
 
@@ -41,7 +41,7 @@ if [[ "$code" != "200" ]]; then
 fi
 
 declare -a assets=()
-declare -a latest_redirects=()
+declare -a notes_links=()
 files_json=""
 
 os_for_name() {
@@ -50,11 +50,6 @@ os_for_name() {
     *.dmg) echo mac ;;
     *) echo linux ;;
   esac
-}
-
-# New prefixes omit version from the object name; older checksums still list -X.Y.Z-.
-latest_name() {
-  printf '%s\n' "$1" | sed -E 's/-[0-9]+\.[0-9]+\.[0-9]+-/-/'
 }
 
 asset_name() {
@@ -77,7 +72,7 @@ while read -r hash name; do
     mv "$name" "$attach"
   fi
   assets+=("$work/$attach")
-  latest_redirects+=("download/latest/${os}/$(latest_name "$name")|${cdn_prefix}/${os}/${name}")
+  notes_links+=("${attach}|${cdn_prefix}/${os}/${name}")
   size="$(wc -c <"$attach" | tr -d ' ')"
   arch=amd64
   case "$name" in
@@ -98,13 +93,12 @@ if [[ ${#assets[@]} -eq 0 ]]; then
   exit 1
 fi
 assets+=("$work/checksums.txt")
-latest_redirects+=("download/latest/checksums.txt|${cdn_prefix}/checksums.txt")
+notes_links+=("checksums.txt|${cdn_prefix}/checksums.txt")
 
 if curl -fsSL "${cdn_prefix}/checksums.txt.sig" -o checksums.txt.sig; then
   assets+=("$work/checksums.txt.sig")
-  latest_redirects+=("download/latest/checksums.txt.sig|${cdn_prefix}/checksums.txt.sig")
+  notes_links+=("checksums.txt.sig|${cdn_prefix}/checksums.txt.sig")
 fi
-latest_redirects+=("download/latest/|${cdn_prefix}/")
 
 released="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 printf '{"version":"%s","tag":"%s","released":"%s","files":[%s]}\n' \
@@ -114,11 +108,8 @@ notes="$(mktemp)"
 {
   node "$ROOT/.github/scripts/changelog-section.cjs" "$version" "$ROOT/CHANGELOG.md"
   printf '\n## Downloads\n\n'
-  for spec in "${latest_redirects[@]}"; do
-    key="${spec%%|*}"
-    dest="${spec#*|}"
-    [[ "$key" == "download/latest/" ]] && continue
-    printf -- '- [%s](%s)\n' "${key##*/}" "$dest"
+  for spec in "${notes_links[@]}"; do
+    printf -- '- [%s](%s)\n' "${spec%%|*}" "${spec#*|}"
   done
 } >"$notes"
 
@@ -159,30 +150,7 @@ put_latest() {
     --cache-control "public,max-age=120" >/dev/null
 }
 
-put_latest_redirect() {
-  local key="$1" dest="$2"
-  echo "PUT ${MINIO_BUCKET}/${key} -> ${dest}"
-  aws s3api put-object \
-    --endpoint-url "$MINIO_ENDPOINT" \
-    --bucket "$MINIO_BUCKET" \
-    --key "$key" \
-    --website-redirect-location "$dest" \
-    --cache-control "public,max-age=120" >/dev/null
-}
-
 put_latest download/latest.json latest.json application/json
-printf '%s\n' "$tag" >LATEST
-put_latest download/LATEST LATEST text/plain
-
-echo "rm s3://${MINIO_BUCKET}/download/latest/"
-aws s3 rm "s3://${MINIO_BUCKET}/download/latest/" \
-  --recursive \
-  --endpoint-url "$MINIO_ENDPOINT" >/dev/null || true
-
-for spec in "${latest_redirects[@]}"; do
-  put_latest_redirect "${spec%%|*}" "${spec#*|}"
-done
 
 echo "latest: ${CDN_PUBLIC_BASE}/${MINIO_BUCKET}/download/latest.json"
-echo "LATEST: ${CDN_PUBLIC_BASE}/${MINIO_BUCKET}/download/LATEST"
 echo "version: ${cdn_prefix}/"

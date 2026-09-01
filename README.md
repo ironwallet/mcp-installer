@@ -44,7 +44,12 @@ also install the marketplace plugin from
 5. Cursor and VS Code: merge MCP JSON (does not wipe other servers).
 6. Claude Code: Git + `claude` CLI if needed, then
    `claude plugin marketplace add ironwallet/ironwallet-agent-kit` and
-   `claude plugin install ironwallet-mcp@ironwallet --scope user`.
+   `claude plugin install ironwallet-mcp@ironwallet --scope user`. If the
+   Claude Desktop app is installed, the chat is configured too: the same
+   `ironwallet` entry is merged into `claude_desktop_config.json` with an
+   absolute `npx` path (loaded on the next full restart of Claude). Claude
+   counts as installed when either channel worked; if the CLI flow failed
+   but the chat was configured, Open starts a chat, not a Code session.
 7. Codex (if the CLI is present):
    `codex plugin marketplace add ironwallet/ironwallet-agent-kit` and
    `codex plugin add ironwallet-mcp@ironwallet`.
@@ -80,14 +85,28 @@ No zypper/pacman path: install Node.js 20+ yourself, then Retry.
 |-------------|-------------------------------|----------------|
 | Cursor | Merge `~/.cursor/mcp.json` | Deeplink with the starter prompt |
 | Visual Studio Code | Merge user `mcp.json` | Copilot Chat URI with the starter prompt |
-| Claude Code | `claude` CLI plugins, `--scope user` | `claude://` new-chat URI |
+| Claude Code | `claude` CLI plugins, `--scope user`; plus `claude_desktop_config.json` when Claude Desktop is installed | `claude://` new-chat URI |
 | Codex | `codex` CLI plugins | none (CLI) |
 | Grok | `grok` CLI plugins, `--trust` | none (CLI) |
 
 Detection looks at PATH, well-known app paths, and `~/.cursor` / `~/.claude` /
-`~/.codex` / `~/.grok`. Claude Desktop may be detected as present, but the
-installer never writes `claude_desktop_config.json` — only the Claude Code CLI
-plugin flow.
+`~/.codex` / `~/.grok`. When the Claude Desktop app itself is found, the
+installer also merges the `ironwallet` entry into that client’s
+`claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`;
+Windows classic: `%APPDATA%\Claude\`; Windows Store: the containerized
+`%LOCALAPPDATA%\Packages\Claude_*\LocalCache\Roaming\Claude\` path the MSIX
+build actually reads). Desktop does not inherit the shell PATH, so this entry
+uses an absolute `npx` path — `cmd /c` around `npx.cmd` on Windows. The chat
+picks it up after a full quit and relaunch of Claude.
+
+For Codex, when `codex` is not on PATH the installer falls back to the CLI
+that ships with the ChatGPT desktop app: on Windows the copy the app
+materializes under `%LOCALAPPDATA%\OpenAI\Codex\bin` (the binary inside the
+MSIX package itself is not executable from outside), then the standalone
+install under `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin`, then the npm shim;
+on macOS `~/.local/bin/codex` or `ChatGPT.app`/`Codex.app`
+`Contents/Resources/codex`. That CLI shares `~/.codex` with the app, so the
+plugin it installs is visible in the desktop app too.
 
 If the environment is already configured: Cursor/VS Code **overwrite only** the
 `ironwallet` key; other MCP servers stay. Claude/Codex/Grok treat
@@ -159,6 +178,8 @@ only:
 3. **Claude Code** — uninstall `ironwallet-mcp@ironwallet` with the current
    `claude plugin` command (the installer does not invoke uninstall). Remove the
    marketplace `ironwallet/ironwallet-agent-kit` if you want a full rollback.
+   If Claude Desktop was configured, also delete the `ironwallet` key from
+   `mcpServers` in `claude_desktop_config.json` (paths above).
 4. **Codex** — remove `ironwallet-mcp@ironwallet` with the current
    `codex plugin` command.
 5. **Grok** — remove `ironwallet-mcp` with the current `grok plugin` command.
