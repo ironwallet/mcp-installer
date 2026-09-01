@@ -1,0 +1,10 @@
+.export/
+.cache/
+/build/
+/ironwallet-setup*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
