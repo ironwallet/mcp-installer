@@ -8,15 +8,6 @@ Download the signed binary for your OS from
 [ironwallet.io/ai](https://ironwallet.io/ai) or GitHub Releases.
 **Source is not published** — only those binaries.
 
-- https://cdn.ironwallet.io/mcp/download/latest/windows/ironwallet-mcp-installer-amd64.exe
-- https://cdn.ironwallet.io/mcp/download/latest/windows/ironwallet-mcp-installer-arm64.exe
-- https://cdn.ironwallet.io/mcp/download/latest/mac/ironwallet-mcp-installer-amd64.dmg
-- https://cdn.ironwallet.io/mcp/download/latest/mac/ironwallet-mcp-installer-arm64.dmg
-- https://cdn.ironwallet.io/mcp/download/latest/linux/ironwallet-mcp-installer-amd64
-- https://cdn.ironwallet.io/mcp/download/latest/linux/ironwallet-mcp-installer-arm64
-- https://cdn.ironwallet.io/mcp/download/latest/checksums.txt
-- https://cdn.ironwallet.io/mcp/download/latest/checksums.txt.sig
-
 The installer is a one-shot GUI. It does not copy itself onto the system, does
 not stay resident, and does not phone home. What it may write is listed in
 [SECURITY.md](SECURITY.md).
@@ -86,7 +77,7 @@ No zypper/pacman path: install Node.js 20+ yourself, then Retry.
 | Cursor | Merge `~/.cursor/mcp.json` | Deeplink with the starter prompt |
 | Visual Studio Code | Merge user `mcp.json` | Copilot Chat URI with the starter prompt |
 | Claude Code | `claude` CLI plugins, `--scope user`; plus `claude_desktop_config.json` when Claude Desktop is installed | `claude://` new-chat URI |
-| Codex | `codex` CLI plugins | none (CLI) |
+| Codex | `codex` CLI plugins | `codex://new?prompt=` when the ChatGPT desktop app is installed; none for a plain CLI |
 | Grok | `grok` CLI plugins, `--trust` | none (CLI) |
 
 Detection looks at PATH, well-known app paths, and `~/.cursor` / `~/.claude` /

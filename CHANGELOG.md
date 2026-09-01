@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-01
+
+The done screen now offers Open for Codex when the ChatGPT desktop app is installed: it opens a new chat with the first-run prompt prefilled.
+
 ## [1.1.0] - 2026-09-01
 
 Claude Desktop chat now gets the IronWallet MCP: when the desktop app is installed, the `ironwallet` entry is merged into `claude_desktop_config.json` (classic and Microsoft Store installs on Windows, `Claude.app` on macOS) with an absolute `npx` path; the chat picks it up after a full restart of Claude. Claude is reported installed when either the CLI plugin or the chat config succeeded, and Open starts a chat when only the chat was configured.
@@ -27,7 +31,8 @@ Install the Claude Code CLI into `~/.local` when the npm global prefix is not wr
 
 Initial release.
 
-[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/ironwallet/mcp-installer/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/ironwallet/mcp-installer/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/ironwallet/mcp-installer/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/ironwallet/mcp-installer/compare/v1.0.0...v1.0.1
