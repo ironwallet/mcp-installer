@@ -47,6 +47,8 @@ The only directories the installer creates are parents of `mcp.json`
 |------|--------|
 | `%USERPROFILE%\.cursor\mcp.json` | Create or merge. Only key `ironwallet`. |
 | `%APPDATA%\Code\User\mcp.json` | Create or merge. Only key `ironwallet`. If `APPDATA` is empty: `%USERPROFILE%\AppData\Roaming\Code\User\mcp.json`. |
+| `%APPDATA%\Claude\claude_desktop_config.json` | Only when a classic (non-Store) Claude Desktop install is found. Create or merge. Only key `ironwallet`. |
+| `%LOCALAPPDATA%\Packages\Claude_*\LocalCache\Roaming\Claude\claude_desktop_config.json` | Only when the Store (MSIX) Claude Desktop is found — that build reads this containerized path, not `%APPDATA%`. Create or merge. Only key `ironwallet`. |
 
 ### macOS
 
@@ -54,6 +56,7 @@ The only directories the installer creates are parents of `mcp.json`
 |------|--------|
 | `~/.cursor/mcp.json` | Create or merge. Only key `ironwallet`. |
 | `~/Library/Application Support/Code/User/mcp.json` | Create or merge. Only key `ironwallet`. |
+| `~/Library/Application Support/Claude/claude_desktop_config.json` | Only when `/Applications/Claude.app` exists. Create or merge. Only key `ironwallet`. |
 
 ### Linux
 
@@ -66,14 +69,19 @@ The only directories the installer creates are parents of `mcp.json`
 file becomes a new JSON object that contains only `ironwallet`. Invalid JSON
 is an error; the file is not replaced with `{}`.
 
-Claude Desktop’s `claude_desktop_config.json` is **never** written.
+Claude Desktop’s `claude_desktop_config.json` is written **only** when the
+desktop app itself is detected (paths above). Because a GUI app does not
+inherit the shell PATH, that entry uses an absolute path to `npx` — on
+Windows wrapped as `cmd /c <npx.cmd>`. If `npx` is not on the installer’s
+PATH the write is skipped with a log line; it never blocks the Claude Code
+CLI flow. On Linux there is no Claude Desktop, so nothing is written.
 
 ### Written by CLIs this installer may run (not edited here)
 
 | Environment | Commands | Typical side effect |
 |-------------|----------|---------------------|
 | Claude Code | `npm install -g @anthropic-ai/claude-code` if `claude` is missing (uses `--prefix ~/.local` when the npm global root is not writable); `claude plugin marketplace add ironwallet/ironwallet-agent-kit`; `claude plugin install ironwallet-mcp@ironwallet --scope user` (retry without `--scope` if the flag is unknown) | Marketplace/plugin under `~/.claude`; CLI may land in `~/.local` |
-| Codex | `codex plugin marketplace add …`; `codex plugin add ironwallet-mcp@ironwallet` | `~/.codex` |
+| Codex | `codex plugin marketplace add …`; `codex plugin add ironwallet-mcp@ironwallet` — via `codex` on PATH, or the CLI bundled with the ChatGPT desktop app (Windows: `%LOCALAPPDATA%\OpenAI\Codex\bin`, then `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin`, then the npm shim; macOS: `~/.local/bin/codex` or the app bundle) | `~/.codex` |
 | Grok | `grok plugin marketplace add …`; `grok plugin install ironwallet-mcp --trust` | `~/.grok` |
 
 `--trust` is passed to Grok as shown. Errors whose text contains `already`,
