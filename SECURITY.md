@@ -81,11 +81,10 @@ CLI flow. On Linux there is no Claude Desktop, so nothing is written.
 | Environment | Commands | Typical side effect |
 |-------------|----------|---------------------|
 | Claude Code | `npm install -g @anthropic-ai/claude-code` if `claude` is missing (uses `--prefix ~/.local` when the npm global root is not writable); `claude plugin marketplace add ironwallet/ironwallet-agent-kit`; `claude plugin install ironwallet-mcp@ironwallet --scope user` (retry without `--scope` if the flag is unknown) | Marketplace/plugin under `~/.claude`; CLI may land in `~/.local` |
-| Codex | `codex plugin marketplace add …`; `codex plugin add ironwallet-mcp@ironwallet` — via `codex` on PATH, or the CLI bundled with the ChatGPT desktop app (Windows: `%LOCALAPPDATA%\OpenAI\Codex\bin`, then `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin`, then the npm shim; macOS: `~/.local/bin/codex` or the app bundle) | `~/.codex` |
-| Grok | `grok plugin marketplace add …`; `grok plugin install ironwallet-mcp --trust` | `~/.grok` |
+| ChatGPT | `codex plugin marketplace add …`; `codex plugin add ironwallet-mcp@ironwallet` — via `codex` on PATH, or the CLI bundled with the ChatGPT desktop app (Windows: `%LOCALAPPDATA%\OpenAI\Codex\bin`, then `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin`, then the npm shim; macOS: `~/.local/bin/codex` or the app bundle) | `~/.codex` |
 
-`--trust` is passed to Grok as shown. Errors whose text contains `already`,
-`exists`, or `duplicate` are treated as success.
+Errors whose text contains `already`, `exists`, or `duplicate` are treated as
+success.
 
 ## Process impact during install
 
@@ -122,11 +121,11 @@ There is no `curl | sh`.
   once per install to populate the npx cache (does not start the MCP server).
   Also `npm install -g @anthropic-ai/claude-code` only if Claude is selected
   and `claude` is not on PATH.
-- **GitHub** — `claude` / `codex` / `grok plugin marketplace add
+- **GitHub** — `claude` / `codex plugin marketplace add
   ironwallet/ironwallet-agent-kit` (those CLIs fetch
   `github.com/ironwallet/ironwallet-agent-kit`).
 - **Browser (user click)** — official download pages for Cursor, VS Code,
-  Claude Code, Codex, Grok, Node.js.
+  Claude Code, ChatGPT, Node.js.
 
 ### After the installer exits
 
@@ -143,7 +142,7 @@ plugin install and the npx prefetch.
 
 ## First-run prompt
 
-Prefill used only when the user clicks Open or Finish on the done screen:
+Prefill used only when the user clicks Open on the done screen:
 
 ```
 Using the IronWallet MCP tools, show what you can do: list my wallets and balances, and briefly explain how transfers, swaps, and deposit QR codes work from this chat.
