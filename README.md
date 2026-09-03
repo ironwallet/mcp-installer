@@ -72,7 +72,7 @@ No zypper/pacman path: install Node.js 20+ yourself, then Retry.
 | Environment | What the installer configures | First-run Open |
 |-------------|-------------------------------|----------------|
 | Cursor | Merge `~/.cursor/mcp.json` | Deeplink with the starter prompt |
-| Visual Studio Code | Merge user `mcp.json` | Copilot Chat URI with the starter prompt |
+| VS Code | Merge user `mcp.json` | Copilot Chat URI with the starter prompt |
 | Claude Code | `claude` CLI plugins, `--scope user`; plus `claude_desktop_config.json` when Claude Desktop is installed | `claude://` new-chat URI |
 | ChatGPT | `codex` CLI plugins | `codex://new?prompt=` when the ChatGPT desktop app is installed; none for a plain CLI |
 
@@ -143,12 +143,13 @@ On the done screen, **Open** prefills this text. **Finish** only closes the
 wizard. It is not written into MCP JSON or plugin files.
 
 ```
-Using the IronWallet MCP tools, show what you can do: list my wallets and balances, and briefly explain how transfers, swaps, and deposit QR codes work from this chat.
+IronWallet MCP is installed. First open https://github.com/ironwallet/ironwallet-agent-kit and read skills/ironwallet-mcp/SKILL.md plus the Tools section in README.md (or llms.txt) so you learn the intended tool workflow. Then explain to me in this chat what I can do: wallets, balances, deposit QR codes, transfers, and swaps.
 ```
 
-The prompt names wallets, balances, transfers, swaps, and deposit QR codes. It
-does not mention a seed, recovery phrase, private key, or mnemonic, and it does
-not ask the agent to sign or export secrets.
+The prompt sends the agent to the public kit repo to read the skill and the
+tool workflow, then to explain wallets, balances, transfers, swaps, and deposit
+QR codes. It does not mention a seed, recovery phrase, private key, or
+mnemonic, and it does not ask the agent to sign or export secrets.
 
 ## Uninstall
 

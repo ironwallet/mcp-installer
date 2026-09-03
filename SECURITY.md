@@ -145,7 +145,7 @@ plugin install and the npx prefetch.
 Prefill used only when the user clicks Open on the done screen:
 
 ```
-Using the IronWallet MCP tools, show what you can do: list my wallets and balances, and briefly explain how transfers, swaps, and deposit QR codes work from this chat.
+IronWallet MCP is installed. First open https://github.com/ironwallet/ironwallet-agent-kit and read skills/ironwallet-mcp/SKILL.md plus the Tools section in README.md (or llms.txt) so you learn the intended tool workflow. Then explain to me in this chat what I can do: wallets, balances, deposit QR codes, transfers, and swaps.
 ```
 
 It is not stored in MCP JSON. It does not mention a seed, recovery phrase,
