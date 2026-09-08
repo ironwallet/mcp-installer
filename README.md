@@ -49,13 +49,14 @@ Chat is never used as an install channel. Missing CLIs get a Download button.
 
 ## Supported platforms
 
-Releases include **amd64 and arm64** for Windows, Linux, and macOS.
+Releases include **amd64 and arm64** for Windows and Linux. macOS is one
+universal2 `.dmg` (both slices).
 
 | File | Arch |
 |------|------|
 | `ironwallet-setup-windows-amd64.exe` / `windows-arm64.exe` | both |
 | `ironwallet-setup-linux-amd64` / `linux-arm64` | both |
-| `ironwallet-setup-macos-amd64.dmg` / `arm64.dmg` | both |
+| `ironwallet-setup-macos.dmg` | universal2 |
 
 The installer does not declare a minimum OS version. Practical floor:
 

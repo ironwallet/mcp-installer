@@ -54,8 +54,10 @@ os_for_name() {
 
 asset_name() {
   local n="$1"
-  if [[ "$n" =~ -[0-9]+\.[0-9]+\.[0-9]+- ]]; then
+  if [[ "$n" =~ -[0-9]+\.[0-9]+\.[0-9]+[-.] ]]; then
     printf '%s\n' "$n"
+  elif [[ "$n" == ironwallet-mcp-installer.* ]]; then
+    printf '%s\n' "ironwallet-mcp-installer-${version}.${n#ironwallet-mcp-installer.}"
   else
     printf '%s\n' "${n/ironwallet-mcp-installer-/ironwallet-mcp-installer-${version}-}"
   fi
@@ -77,6 +79,8 @@ while read -r hash name; do
   arch=amd64
   case "$name" in
     *-arm64*) arch=arm64 ;;
+    *-amd64*) arch=amd64 ;;
+    *.dmg) arch=universal ;;
   esac
   url="${cdn_prefix}/${os}/${name}"
   entry=$(printf '{"os":"%s","arch":"%s","name":"%s","url":"%s","size":%s,"sha256":"%s"}' \

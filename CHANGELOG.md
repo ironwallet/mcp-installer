@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-07
+
+macOS ships one universal2 `.dmg` instead of separate amd64 and arm64 images. GitHub Release and `checksums.txt` list only `ironwallet-mcp-installer.dmg`. CDN still PUTs the same bytes as `…-amd64.dmg` / `…-arm64.dmg` so existing site `latest/mac/` links keep working.
+
 ## [1.2.0] - 2026-09-03
 
 Setup notes and Check again on the select screen. Open prompt now reads the kit skill first.
@@ -39,7 +43,8 @@ Install the Claude Code CLI into `~/.local` when the npm global prefix is not wr
 
 Initial release.
 
-[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/ironwallet/mcp-installer/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/ironwallet/mcp-installer/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ironwallet/mcp-installer/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/ironwallet/mcp-installer/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/ironwallet/mcp-installer/compare/v1.1.0...v1.1.1
